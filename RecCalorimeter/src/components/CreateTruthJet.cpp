@@ -61,6 +61,11 @@ struct CreateTruthJet final
     std::vector<fastjet::PseudoJet> clustersPJ;
     int i = 0;
     for (auto particle : input) {
+      if (particle.getGeneratorStatus() != 1 || particle.isCreatedInSimulation() || // Only consider stable particles
+        std::abs(particle.getPDG()) == 12 || std::abs(particle.getPDG()) == 14 || std::abs(particle.getPDG()) == 16) { // No Neutrinos!
+        continue;
+      }
+
       fastjet::PseudoJet clusterPJ(particle.getMomentum().x, particle.getMomentum().y, particle.getMomentum().z,
                                    particle.getEnergy());
       clusterPJ.set_user_info(new k4::recCalo::ClusterInfo(i));
